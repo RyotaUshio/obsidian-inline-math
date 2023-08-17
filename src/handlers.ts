@@ -1,8 +1,7 @@
 import { syntaxTree } from '@codemirror/language';
 import { EditorView } from '@codemirror/view';
 
-import { BRACKET_MATH, INLINE_MATH_BEGIN, MATH_END } from './node_names';
-import { nodeText } from './utils';
+import { isInlineMathBegin, isInlineMathEnd } from './utils';
 
 
 export function deletionHandler(view: EditorView) {
@@ -17,19 +16,14 @@ export function deletionHandler(view: EditorView) {
 
     const indexNextDollar = view.state.doc.toString().indexOf("$", from + index + 1);
     const tree = syntaxTree(view.state);
-    let insideInlineMath = false;
     tree.iterate({
         from: from + index,
         to: indexNextDollar,
         enter(node) {
-            const next = node.node.nextSibling;
-            if (node.name == INLINE_MATH_BEGIN) {
-                insideInlineMath = true;
-            } else if (insideInlineMath
-                && node.name == BRACKET_MATH && nodeText(node, view.state) == "{}"
-                && next?.name == MATH_END
+            if (isInlineMathEnd(node, view.state)
+                && view.state.sliceDoc(node.from - 3, node.from) == " {}"
             ) {
-                view.dispatch({ changes: { from: node.from, to: node.to } }) // delete "{}"
+                view.dispatch({ changes: { from: node.from - 3, to: node.from } }) // delete " {}"
             }
         }
     });
@@ -38,18 +32,22 @@ export function deletionHandler(view: EditorView) {
 export function insertionHandler(view: EditorView) {
     const tree = syntaxTree(view.state);
     const range = view.state.selection.main;
-    const indexNextDollar = view.state.doc.toString().indexOf("$", range.to);
+    const doc = view.state.doc.toString();
+    const indexNextDollar = doc.indexOf("$", range.to);
+    const indexPrevDollar = doc.lastIndexOf("$", range.from);
 
     if (indexNextDollar >= 0) {
         tree.iterate({
-            from: indexNextDollar,
+            from: indexPrevDollar,
             to: indexNextDollar + 1,
             enter(node) {
-                if (node.name == MATH_END && nodeText(node, view.state) == "$") {
-                    // end of inline math
-                    const prev = node.node.prevSibling;
-                    if (!(prev?.name == BRACKET_MATH && nodeText(prev, view.state) == "{}")) {
-                        view.dispatch({ changes: { from: node.from, insert: "{}" } });
+                if (isInlineMathBegin(node, view.state)) {
+                    if (!(view.state.sliceDoc(node.to, node.to + 3) == "{} ")) {
+                        view.dispatch({ changes: { from: node.to, insert: "{} " } });
+                    }
+                } else if (isInlineMathEnd(node, view.state)) {
+                    if (!(view.state.sliceDoc(node.from - 3, node.from) == " {}")) {
+                        view.dispatch({ changes: { from: node.from, insert: " {}" } });
                     }
                 }
             }

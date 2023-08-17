@@ -2,11 +2,10 @@ import { RangeSetBuilder, RangeSet, RangeValue } from '@codemirror/state';
 import { Decoration, DecorationSet, EditorView, PluginValue, ViewPlugin, ViewUpdate } from "@codemirror/view";
 import { syntaxTree } from '@codemirror/language';
 
-import { nodeText } from './utils';
-import { BRACKET_MATH, INLINE_MATH_BEGIN, MATH_END } from 'node_names';
+import { isInlineMathBegin, isInlineMathEnd } from './utils';
 
 
-class DummyRangeValue extends RangeValue {}
+class DummyRangeValue extends RangeValue { }
 
 
 export const decorator = ViewPlugin.fromClass(
@@ -27,32 +26,36 @@ export const decorator = ViewPlugin.fromClass(
             const atomicRangeBulder = new RangeSetBuilder<DummyRangeValue>();
             const tree = syntaxTree(view.state);
 
-            let insideInlineMath = false;
-
             for (const { from, to } of view.visibleRanges) {
                 tree.iterate({
                     from,
                     to,
                     enter(node) {
-                        if (node.name == INLINE_MATH_BEGIN) {
-                            insideInlineMath = true;
-                        } else if (insideInlineMath && node.name == MATH_END) {
-                            insideInlineMath = false;
-                            const prev = node.node.prevSibling;
-                            if (prev) {
-                                const prevText = nodeText(prev, view.state);
-                                if (prev.name == BRACKET_MATH && prevText == "{}") {
-                                    decorationBulder.add(
-                                        prev.from,
-                                        prev.to,
-                                        Decoration.replace({})
-                                    );
-                                    atomicRangeBulder.add(
-                                        prev.from, 
-                                        node.to, 
-                                        new DummyRangeValue()
-                                    );
-                                }
+                        if (isInlineMathBegin(node, view.state)) {
+                            if (view.state.sliceDoc(node.to, node.to + 3) == "{} ") {
+                                decorationBulder.add(
+                                    node.to,
+                                    node.to + 3,
+                                    Decoration.replace({})
+                                );
+                                atomicRangeBulder.add(
+                                    node.from,
+                                    node.to + 3,
+                                    new DummyRangeValue()
+                                );
+                            }
+                        } else if (isInlineMathEnd(node, view.state)) {
+                            if (view.state.sliceDoc(node.from - 3, node.from) == " {}") {
+                                decorationBulder.add(
+                                    node.from - 3,
+                                    node.from,
+                                    Decoration.replace({})
+                                );
+                                atomicRangeBulder.add(
+                                    node.from - 3,
+                                    node.to,
+                                    new DummyRangeValue()
+                                );
                             }
                         }
                     }
