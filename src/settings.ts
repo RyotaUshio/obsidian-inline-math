@@ -1,7 +1,7 @@
 import { App, ButtonComponent, PluginSettingTab, Setting } from "obsidian";
 
 import NoMoreFlicker from "./main";
-import { Key, noneKey, toString } from "./key";
+import { Key, asKey, noneKey, toString } from "./key";
 
 
 export interface NoMoreFlickerSettings {
@@ -73,7 +73,7 @@ export class NoMoreFlickerSettingTab extends PluginSettingTab {
                     this.plugin.settings.deletionKeys.push(noneKey);
                     button.setButtonText("Press deletion keys...")
                     this.plugin.registerDomEvent(button.buttonEl, "keydown", (event: KeyboardEvent) => {
-                        this.plugin.settings.deletionKeys[this.plugin.settings.deletionKeys.length - 1] = event;
+                        this.plugin.settings.deletionKeys[this.plugin.settings.deletionKeys.length - 1] = asKey(event);
                         listDeletionKeys();
                         if (list.lastChild instanceof HTMLElement) {
                             new ButtonComponent(list.lastChild)

@@ -32,6 +32,7 @@ export default class NoMoreFlicker extends Plugin {
 
 	private onKeydown(event: KeyboardEvent, view: EditorView) {
 		if (this.isDeletion(event)) {
+			console.log("DELETION");
 			deletionHandler(view);
 		} else {
 			insertionHandler(view);
