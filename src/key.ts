@@ -1,37 +1,35 @@
-export class Key {
-    constructor(
-        public key: string,
-        public ctrlKey: boolean,
-        public metaKey: boolean,
-        public shiftKey: boolean,
-        public altKey: boolean,
-    ) {}
-
-    is(event: KeyboardEvent): boolean {
-        return JSON.stringify(Key.fromEvent(event)) == JSON.stringify(this);
-    }
-
-    toStr(): string {
-        let ret = "";
-        if (this.ctrlKey) ret += "Ctrl + ";
-        if (this.shiftKey) ret += "Shift + ";
-        if (this.metaKey) ret += "Neta + ";
-        if (this.altKey) ret += "Alt + ";
-        ret += this.key.charAt(0).toUpperCase() + this.key.slice(1);
-        return ret;
-    }
-
-    static fromEvent(event: KeyboardEvent): Key {
-        const {key, ctrlKey, shiftKey, metaKey, altKey} = event;
-        return new Key(key, ctrlKey, shiftKey, metaKey, altKey);
-    }
-
-    static modifierNames = {
-        ctrlKey: "Ctrl",
-        metaKey: "Meta",
-        shiftKey: "Shift",
-        altKey: "Alt",
-    }
-
-    static none = new Key("", false, false, false, false);
+export interface Key {
+    key: string;
+    ctrlKey: boolean;
+    metaKey: boolean;
+    shiftKey: boolean;
+    altKey: boolean;
 }
+
+export const is = (event: KeyboardEvent, key: Key): boolean => {
+    return (
+        key.key == event.key
+        && key.ctrlKey == event.ctrlKey
+        && key.metaKey == event.metaKey
+        && key.shiftKey == event.shiftKey
+        && key.altKey == event.altKey
+    );
+};
+
+export const toString = (key: Key): string => {
+    let ret = "";
+    if (key.ctrlKey) ret += "Ctrl + ";
+    if (key.shiftKey) ret += "Shift + ";
+    if (key.metaKey) ret += "Neta + ";
+    if (key.altKey) ret += "Alt + ";
+    ret += key.key.charAt(0).toUpperCase() + key.key.slice(1);
+    return ret;
+}
+
+export const noneKey = {
+    key: "",
+    ctrlKey: false,
+    metaKey: false,
+    shiftKey: false,
+    altKey: false,
+};

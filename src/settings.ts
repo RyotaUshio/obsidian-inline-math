@@ -1,7 +1,7 @@
 import { App, ButtonComponent, PluginSettingTab, Setting } from "obsidian";
 
 import NoMoreFlicker from "./main";
-import { Key } from "./key";
+import { Key, noneKey, toString } from "./key";
 
 
 export interface NoMoreFlickerSettings {
@@ -11,14 +11,22 @@ export interface NoMoreFlickerSettings {
 
 export const DEFAULT_SETTINGS: NoMoreFlickerSettings = {
     deletionKeys: [
-        new Key("Backspace", false, false, false, false),
-        new Key("h", true, false, false, false),
+        {
+            key: "Backspace",
+            ctrlKey: false,
+            metaKey: false,
+            shiftKey: false,
+            altKey: false,
+        }, 
+        {
+            key: "h",
+            ctrlKey: true,
+            metaKey: false,
+            shiftKey: false,
+            altKey: false,
+        }        
     ]
 };
-
-
-
-
 
 
 export class NoMoreFlickerSettingTab extends PluginSettingTab {
@@ -42,7 +50,7 @@ export class NoMoreFlickerSettingTab extends PluginSettingTab {
                 ...this.plugin.settings.deletionKeys.map((key: Key) => {
                     const item = createEl('li', { text: "" });
                     new Setting(item)
-                        .setName(key.toStr())
+                        .setName(toString(key))
                         .addExtraButton((btn) => {
                             btn.setIcon('x')
                                 .onClick(async () => {
@@ -62,10 +70,10 @@ export class NoMoreFlickerSettingTab extends PluginSettingTab {
             button
                 .setIcon("plus")
                 .onClick(() => {
-                    this.plugin.settings.deletionKeys.push(Key.none);
+                    this.plugin.settings.deletionKeys.push(noneKey);
                     button.setButtonText("Press deletion keys...")
                     this.plugin.registerDomEvent(button.buttonEl, "keydown", (event: KeyboardEvent) => {
-                        this.plugin.settings.deletionKeys[this.plugin.settings.deletionKeys.length - 1] = Key.fromEvent(event);
+                        this.plugin.settings.deletionKeys[this.plugin.settings.deletionKeys.length - 1] = event;
                         listDeletionKeys();
                         if (list.lastChild instanceof HTMLElement) {
                             new ButtonComponent(list.lastChild)

@@ -4,7 +4,8 @@ import { EditorView } from '@codemirror/view';
 
 import { decorator } from './decoration_and_atomic-range';
 import { DEFAULT_SETTINGS, NoMoreFlickerSettingTab, NoMoreFlickerSettings } from './settings';
-import { deletionHandler, insertionHandler } from 'handlers';
+import { deletionHandler, insertionHandler } from './handlers';
+import { is } from './key';
 
 
 export default class NoMoreFlicker extends Plugin {
@@ -13,9 +14,9 @@ export default class NoMoreFlicker extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		// this.addSettingTab(new NoMoreFlickerSettingTab(this.app, this));
+		this.addSettingTab(new NoMoreFlickerSettingTab(this.app, this));
 
-		this.registerEditorExtension(decorator);
+		// this.registerEditorExtension(decorator);
 		this.registerEditorExtension(Prec.highest(EditorView.domEventHandlers({
 			"keydown": this.onKeydown.bind(this)
 		})));
@@ -35,6 +36,7 @@ export default class NoMoreFlicker extends Plugin {
 
 	private onKeydown(event: KeyboardEvent, view: EditorView) {
 		if (this.isDeletion(event)) {
+			console.log("DELETE");
 			deletionHandler(view);
 		} else {
 			insertionHandler(view);
@@ -42,11 +44,6 @@ export default class NoMoreFlicker extends Plugin {
 	}
 
 	private isDeletion(event: KeyboardEvent): boolean {
-		return event.key == "Backspace" || (event.ctrlKey && event.key == "h");
-		// let ret = false;
-		// for (const key of this.settings.deletionKeys) {
-		// 	console.log(key.is);
-		// }
-		// return false;
+		return this.settings.deletionKeys.some((key) => is(event, key));
 	}
 }
