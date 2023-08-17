@@ -16,14 +16,10 @@ export default class NoMoreFlicker extends Plugin {
 
 		this.addSettingTab(new NoMoreFlickerSettingTab(this.app, this));
 
-		// this.registerEditorExtension(decorator);
+		this.registerEditorExtension(decorator);
 		this.registerEditorExtension(Prec.highest(EditorView.domEventHandlers({
 			"keydown": this.onKeydown.bind(this)
 		})));
-	}
-
-	onunload() {
-
 	}
 
 	async loadSettings() {
@@ -36,7 +32,6 @@ export default class NoMoreFlicker extends Plugin {
 
 	private onKeydown(event: KeyboardEvent, view: EditorView) {
 		if (this.isDeletion(event)) {
-			console.log("DELETE");
 			deletionHandler(view);
 		} else {
 			insertionHandler(view);
