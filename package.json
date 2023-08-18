@@ -1,7 +1,7 @@
 {
 	"name": "obsidian-inline-math",
 	"version": "0.1.0",
-	"description": "No more flickering inline math in Obsidian",
+	"description": "No longer disturbed by flickering inline math in Obsidian.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
