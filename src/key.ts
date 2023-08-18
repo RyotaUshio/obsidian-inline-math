@@ -27,12 +27,7 @@ export const toString = (key: Key): string => {
     if (key.shiftKey) ret += "Shift + ";
     if (key.metaKey) ret += "Neta + ";
     if (key.altKey) ret += "Alt + ";
-    try {
     ret += key.key.charAt(0).toUpperCase() + key.key.slice(1);
-    } catch (err) {
-        console.log(key);
-        throw err;
-    }
     return ret;
 }
 

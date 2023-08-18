@@ -92,7 +92,6 @@ export class NoMoreFlickerSettingTab extends PluginSettingTab {
                 button.setButtonText("Restore defaults")
                     .onClick(async () => {
                         this.plugin.settings = Object.assign({}, DEFAULT_SETTINGS);
-                        console.log(this.plugin.settings);
                         listDeletionKeys();
                         await this.plugin.saveSettings();
                     });

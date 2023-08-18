@@ -12,12 +12,12 @@ export function deletionHandler(view: EditorView) {
     const to = range.to;
     const text = view.state.sliceDoc(from, to)
     const index = text.lastIndexOf("$");
-    console.log(
-        `range: ${range.from}-${range.to}\n`
-        + `from = ${from} \ to = ${to}\n`
-        + `text = "${text}"\n`
-        + `index = ${index}`
-    );
+    // console.log(
+    //     `range: ${range.from}-${range.to}\n`
+    //     + `from = ${from} \ to = ${to}\n`
+    //     + `text = "${text}"\n`
+    //     + `index = ${index}`
+    // );
     if (index == -1) {
         return;
     }
@@ -25,15 +25,15 @@ export function deletionHandler(view: EditorView) {
     const doc = view.state.doc.toString();
     const indexNextDollar = doc.indexOf("$", from + index + 1);
     const indexPrevDollar = doc.lastIndexOf("$", from);
-    console.log(
-        `!! ${indexPrevDollar}:${indexNextDollar}: "${view.state.sliceDoc(indexPrevDollar, indexNextDollar)}"`
-    );
+    // console.log(
+    //     `!! ${indexPrevDollar}:${indexNextDollar}: "${view.state.sliceDoc(indexPrevDollar, indexNextDollar)}"`
+    // );
     const tree = syntaxTree(view.state);
 
     const changes: ChangeSpec[] = [];
     tree.iterate({
         from: indexPrevDollar,
-        to: indexNextDollar,
+        to: indexNextDollar >= 0 ? indexNextDollar : to,
         enter(node) {
             printNode(node, view.state);
             if (isInlineMathBegin(node, view.state)

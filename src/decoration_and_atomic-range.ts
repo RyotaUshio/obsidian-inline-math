@@ -66,7 +66,7 @@ export const decorator = ViewPlugin.fromClass(
             this.atomicRanges = atomicRangeBulder.finish();
         }
     }, {
-    // decorations: instance => instance.decorations,
+    decorations: instance => instance.decorations,
     provide: plugin => EditorView.atomicRanges.of(view => {
         return view.plugin(plugin)?.atomicRanges ?? RangeSet.empty
     })
