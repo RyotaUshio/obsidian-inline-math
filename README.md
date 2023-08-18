@@ -21,7 +21,7 @@ Although this plugin is still in beta version, you can install it using BRAT.
 ## How does it work?
 
 It's simple. Obsidian doesn't recognize `$[space]...$` or `$...[space]$` as a math.
-So this plugin inserts `{}` at the beginning and end of it when an inline math `$...$` is found:
+So, when an inline math `$...$` is found, this plugin inserts `{}` at the beginning and end of it:
 
 ```latex
 ${} ... {}$
