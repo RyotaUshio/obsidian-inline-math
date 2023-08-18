@@ -35,6 +35,7 @@ export function deletionHandler(view: EditorView) {
         from: indexPrevDollar,
         to: indexNextDollar,
         enter(node) {
+            printNode(node, view.state);
             if (isInlineMathBegin(node, view.state)
             && view.state.sliceDoc(node.to, node.to + 3) == "{} ") {
                 changes.push({ from: node.to, to: node.to + 3 });
