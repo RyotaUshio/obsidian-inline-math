@@ -1,3 +1,5 @@
+import { Platform } from "obsidian";
+
 export interface Key {
     key: string;
     ctrlKey: boolean;
@@ -25,8 +27,10 @@ export const toString = (key: Key): string => {
     let ret = "";
     if (key.ctrlKey) ret += "Ctrl + ";
     if (key.shiftKey) ret += "Shift + ";
-    if (key.metaKey) ret += "Neta + ";
-    if (key.altKey) ret += "Alt + ";
+    if (key.metaKey) ret += Platform.isMacOS || Platform.isIosApp ? "Cmd + "
+                            : Platform.isWin ? "Win + "
+                            : "Meta + ";
+    if (key.altKey) ret += Platform.isMacOS || Platform.isIosApp ? "Option + " : "Alt + ";
     ret += key.key.charAt(0).toUpperCase() + key.key.slice(1);
     return ret;
 }
