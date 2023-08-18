@@ -17,3 +17,14 @@ Although this plugin is still in beta version, you can install it using BRAT.
 3.  Copy and paste `https://github.com/RyotaUshio/obsidian-inline-math` in the pop-up prompt and click on **Add Plugin**.
 4.  (Optional) Turn on **Auto-update plugins at startup** at the top of the page.
 5.  Go to **Community plugins > Installed plugins**. You will find "No more flickering inline math" in the list. Click on the toggle button to enable it.
+
+## How does it work?
+
+It's simple. Obsidian doesn't recognize `$[space]...$` or `$...[space]$` as a math.
+So this plugin inserts `{}` at the beginning and end of it when an inline math `$...$` is found:
+
+```latex
+${} ... {}$
+```
+
+These brackets are then hidden so that you are not disturbed by them.
