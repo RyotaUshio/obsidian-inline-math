@@ -10,7 +10,7 @@ Thank you for those who shared their ideas on the [forum](https://forum.obsidian
 
 ## Installation
 
-Although this plugin is still in beta version, you can install it using BRAT.
+Although this plugin is still in beta version, you can install it using BRAT. 
 
 1.  Install the [BRAT](obsidian://show-plugin?id=obsidian42-brat) community plugin and enable it.
 2.  Go to **Options**. In the **Beta Plugin List** section, click on the **Add Beta plugin** button.
