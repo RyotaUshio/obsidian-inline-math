@@ -28,3 +28,10 @@ ${} ... {}$
 ```
 
 These brackets are then hidden so that you are not disturbed by them.
+
+## Don't like the bracket pollution? Don't worry!
+
+You can always safely clean up the brackets by running the following commands:
+
+- **Clean up brackets in this note**
+- **Clean up brackets in all the opened notes**
