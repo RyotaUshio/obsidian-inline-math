@@ -1,11 +1,12 @@
 import { Prec } from '@codemirror/state';
-import { Plugin } from 'obsidian';
+import { MarkdownView, Plugin } from 'obsidian';
 import { EditorView } from '@codemirror/view';
 
 import { decorator } from './decoration_and_atomic-range';
 import { DEFAULT_SETTINGS, NoMoreFlickerSettingTab, NoMoreFlickerSettings } from './settings';
 import { deletionHandler, insertionHandler } from './handlers';
 import { is } from './key';
+import { cleanerCallback } from 'cleaner';
 
 
 export default class NoMoreFlicker extends Plugin {
@@ -20,6 +21,18 @@ export default class NoMoreFlicker extends Plugin {
 		this.registerEditorExtension(Prec.highest(EditorView.domEventHandlers({
 			"keydown": this.onKeydown.bind(this)
 		})));
+
+		this.addCommand({
+			id: "clean",
+			name: "Clean up brackets in this note",
+			editorCallback: cleanerCallback,
+		});
+
+		this.addCommand({
+			id: "clean-all", 
+			name: "Clean up brackets in all the opened notes",
+			editorCallback: this.cleanAllMarkdownViews.bind(this),
+		});
 	}
 
 	async loadSettings() {
@@ -40,5 +53,13 @@ export default class NoMoreFlicker extends Plugin {
 
 	private isDeletion(event: KeyboardEvent): boolean {
 		return this.settings.deletionKeys.some((key) => is(event, key));
+	}
+
+	private cleanAllMarkdownViews() {
+		this.app.workspace.iterateAllLeaves((leaf) => {
+			if (leaf.view instanceof MarkdownView) {
+				cleanerCallback(leaf.view.editor);
+			}
+		});		
 	}
 }
