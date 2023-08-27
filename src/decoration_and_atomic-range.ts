@@ -3,12 +3,13 @@ import { Decoration, DecorationSet, EditorView, PluginValue, ViewPlugin, ViewUpd
 import { syntaxTree } from '@codemirror/language';
 
 import { isInlineMathBegin, isInlineMathEnd } from './utils';
+import NoMoreFlicker from 'main';
 
 
 class DummyRangeValue extends RangeValue { }
 
 
-export const decorator = ViewPlugin.fromClass(
+export const createViewPlugin = (plugin: NoMoreFlicker) => ViewPlugin.fromClass(
     class implements PluginValue {
         decorations: DecorationSet;
         atomicRanges: RangeSet<DummyRangeValue>;
@@ -66,8 +67,8 @@ export const decorator = ViewPlugin.fromClass(
             this.atomicRanges = atomicRangeBulder.finish();
         }
     }, {
-    decorations: instance => instance.decorations,
-    provide: plugin => EditorView.atomicRanges.of(view => {
-        return view.plugin(plugin)?.atomicRanges ?? RangeSet.empty
+    decorations: instance => plugin.settings.disableDecorations ? Decoration.none : instance.decorations,
+    provide: viewPlugin => EditorView.atomicRanges.of(view => {
+        return plugin.settings.disableAtomicRanges ? RangeSet.empty : (view.plugin(viewPlugin)?.atomicRanges ?? RangeSet.empty);
     })
 });

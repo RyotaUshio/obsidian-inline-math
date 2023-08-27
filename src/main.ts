@@ -1,26 +1,41 @@
-import { Prec } from '@codemirror/state';
 import { MarkdownView, Plugin } from 'obsidian';
+import { Extension, Prec } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 
-import { decorator } from './decoration_and_atomic-range';
 import { DEFAULT_SETTINGS, NoMoreFlickerSettingTab, NoMoreFlickerSettings } from './settings';
 import { deletionHandler, insertionHandler } from './handlers';
 import { is } from './key';
 import { cleanerCallback } from 'cleaner';
+import { createViewPlugin } from 'decoration_and_atomic-range';
 
 
 export default class NoMoreFlicker extends Plugin {
 	settings: NoMoreFlickerSettings;
+	viewPlugin: Extension[] = [];
 
 	async onload() {
+		
+		/** Settings */
+		
 		await this.loadSettings();
-
+		await this.saveSettings();
 		this.addSettingTab(new NoMoreFlickerSettingTab(this.app, this));
 
-		this.registerEditorExtension(decorator);
+
+		/** Decorations & atomic ranges */
+
+		this.registerEditorExtension(this.viewPlugin);
+		this.remakeViewPlugin();
+
+
+		/** Key event handlers */
+
 		this.registerEditorExtension(Prec.highest(EditorView.domEventHandlers({
 			"keydown": this.onKeydown.bind(this)
 		})));
+
+
+		/** Clean-up commands */
 
 		this.addCommand({
 			id: "clean",
@@ -61,5 +76,11 @@ export default class NoMoreFlicker extends Plugin {
 				cleanerCallback(leaf.view.editor);
 			}
 		});		
+	}
+
+	remakeViewPlugin() {
+		this.viewPlugin.length = 0;
+		this.viewPlugin.push(createViewPlugin(this));
+		this.app.workspace.updateOptions();
 	}
 }

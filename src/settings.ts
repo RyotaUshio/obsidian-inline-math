@@ -6,6 +6,8 @@ import { Key, asKey, noneKey, toString } from "./key";
 
 export interface NoMoreFlickerSettings {
     deletionKeys: Key[];
+    disableDecorations: boolean;
+    disableAtomicRanges: boolean;
 }
 
 
@@ -25,7 +27,9 @@ export const DEFAULT_SETTINGS: NoMoreFlickerSettings = {
             shiftKey: false,
             altKey: false,
         }        
-    ]
+    ], 
+    disableDecorations: false,
+    disableAtomicRanges: false,
 };
 
 
@@ -80,12 +84,42 @@ export class NoMoreFlickerSettingTab extends PluginSettingTab {
                                 .setButtonText("Save")
                                 .onClick(async () => {
                                     await this.plugin.saveSettings();
-                                    button.setIcon("plus");
+                                    this.display();
                                 })
                         }
                     });
                 });
         });
+
+        containerEl.createEl("h6", {text: "Debug mode"})
+        new Setting(containerEl)
+            .setName("Disable decorations")
+            .setDesc("If turned on, decorations to hide brackets adjacent to dollar signs are disabled.")
+            .addToggle((toggle) => {
+                toggle.setValue(this.plugin.settings.disableDecorations)
+                    .onChange(async (disable) => {
+                        this.plugin.settings.disableDecorations = disable;
+                        this.plugin.remakeViewPlugin();
+                        await this.plugin.saveSettings();
+                    })
+            });
+        new Setting(containerEl)
+            .setName("Disable atomic ranges")
+            .setDesc(createFragment((el) => {
+                el.createSpan({text: "If turned on, atomic ranges to treat \""});
+                el.createEl("code", {text: "${} "});
+                el.createSpan({text: "\" or \""});
+                el.createEl("code", {text: " {}$"});
+                el.createSpan({text: "\" as one character are disabled."});
+            }))
+            .addToggle((toggle) => {
+                toggle.setValue(this.plugin.settings.disableAtomicRanges)
+                    .onChange(async (disable) => {
+                        this.plugin.settings.disableAtomicRanges = disable;
+                        this.plugin.remakeViewPlugin();
+                        await this.plugin.saveSettings();
+                    })
+            });
 
         new Setting(containerEl)
             .addButton((button) => {
@@ -94,8 +128,9 @@ export class NoMoreFlickerSettingTab extends PluginSettingTab {
                         this.plugin.settings = Object.assign({}, DEFAULT_SETTINGS);
                         listDeletionKeys();
                         await this.plugin.saveSettings();
+                        this.display();
                     });
-            })
+            });
     }
 
 
