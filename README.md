@@ -1,18 +1,24 @@
 # No More Flickering Inline Math for Obsidian
 
-<a href="https://www.buymeacoffee.com/ryotaushio" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
-
 With this [Obsidian.md](https://obsidian.md/) plugin, you will be no longer disturbed by the **flickering inline math**!
 
 Turned OFF               | Turned ON
 :-----------------------:|:------------------------:
 ![Turned OFF](fig/off.gif) | ![Turned ON](fig/on.gif)
 
-Thank you for those who shared their ideas on the [forum](https://forum.obsidian.md/t/inline-math-allow-white-spaces-before-closing-dollar-signs/63551)!
+Thank you to those who shared their ideas on the [forum](https://forum.obsidian.md/t/inline-math-allow-white-spaces-before-closing-dollar-signs/63551)!
+
+## Support Development
+
+If you are enjoying this plugin, please consider supporting me by buying me a coffee!
+
+<a href="https://www.buymeacoffee.com/ryotaushio" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
 ## Installation
 
-Although this plugin is still in beta version, you can install it using BRAT. 
+You can find it in Obsidian's community plugins browser.
+
+Also, you can participate in the beta-testing of the latest version by installing it using BRAT. 
 
 1.  Install the [BRAT](obsidian://show-plugin?id=obsidian42-brat) community plugin and enable it.
 2.  Go to **Options**. In the **Beta Plugin List** section, click on the **Add Beta plugin** button.
