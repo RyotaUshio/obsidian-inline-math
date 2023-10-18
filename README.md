@@ -35,11 +35,11 @@ So, when an inline math `$...$` is found, this plugin inserts `{}` at the beginn
 ${} ... {}$
 ```
 
-These brackets are then hidden so that you are not disturbed by them.
+These braces are then hidden so that you are not disturbed by them.
 
-## Don't like the bracket pollution? Don't worry!
+## Don't like the brace pollution? Don't worry!
 
-You can always safely clean up the brackets by running the following commands:
+You can always safely clean up the braces by running the following commands:
 
-- **Clean up brackets in this note**
-- **Clean up brackets in all the opened notes**
+- **Clean up braces in this note**
+- **Clean up braces in all the opened notes**

@@ -6,6 +6,7 @@ import { Key, asKey, noneKey, toString } from "./key";
 
 export interface NoMoreFlickerSettings {
     deletionKeys: Key[];
+    disableInTable: boolean;
     disableDecorations: boolean;
     disableAtomicRanges: boolean;
 }
@@ -28,6 +29,7 @@ export const DEFAULT_SETTINGS: NoMoreFlickerSettings = {
             altKey: false,
         }        
     ], 
+    disableInTable: false,
     disableDecorations: false,
     disableAtomicRanges: false,
 };
@@ -91,10 +93,21 @@ export class NoMoreFlickerSettingTab extends PluginSettingTab {
                 });
         });
 
-        containerEl.createEl("h6", {text: "Debug mode"})
+        new Setting(containerEl)
+            .setName("Disable in table")
+            .setDesc("If turned on, braces won't be inserted in table. Decorations & atomic ranges are enabled regardless of this setting.")
+            .addToggle((toggle) => {
+                toggle.setValue(this.plugin.settings.disableInTable)
+                    .onChange(async (disable) => {
+                        this.plugin.settings.disableInTable = disable;
+                        await this.plugin.saveSettings();
+                    })
+            });
+
+        containerEl.createEl("h5", {text: "Debug mode"})
         new Setting(containerEl)
             .setName("Disable decorations")
-            .setDesc("If turned on, decorations to hide brackets adjacent to dollar signs are disabled.")
+            .setDesc("If turned on, decorations to hide braces adjacent to dollar signs are disabled.")
             .addToggle((toggle) => {
                 toggle.setValue(this.plugin.settings.disableDecorations)
                     .onChange(async (disable) => {

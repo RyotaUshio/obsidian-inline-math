@@ -42,11 +42,3 @@ export function selectionSatisfies(state: EditorState, predicate: (node: SyntaxN
 
     return ret;
 }
-
-export function shouldIgnore(state: EditorState): boolean {
-    return selectionSatisfies(
-        state,
-        node => node.name.includes("HyperMD-table") || node.name.includes("hmd-table")
-            || node.name.includes("HyperMD-codeblock") || node.name.includes("hmd-codeblock")
-    );
-}

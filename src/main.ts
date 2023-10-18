@@ -1,3 +1,4 @@
+import { EditorState } from '@codemirror/state';
 import { MarkdownView, Plugin } from 'obsidian';
 import { Extension, Prec } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
@@ -7,7 +8,7 @@ import { deletionHandler, insertionHandler } from './handlers';
 import { is } from './key';
 import { cleanerCallback } from 'cleaner';
 import { createViewPlugin } from 'decoration_and_atomic-range';
-import { shouldIgnore } from 'utils';
+import { selectionSatisfies } from 'utils';
 
 
 export default class NoMoreFlicker extends Plugin {
@@ -15,9 +16,9 @@ export default class NoMoreFlicker extends Plugin {
 	viewPlugin: Extension[] = [];
 
 	async onload() {
-		
+
 		/** Settings */
-		
+
 		await this.loadSettings();
 		await this.saveSettings();
 		this.addSettingTab(new NoMoreFlickerSettingTab(this.app, this));
@@ -40,13 +41,13 @@ export default class NoMoreFlicker extends Plugin {
 
 		this.addCommand({
 			id: "clean",
-			name: "Clean up brackets in this note",
+			name: "Clean up braces in this note",
 			editorCallback: cleanerCallback,
 		});
 
 		this.addCommand({
-			id: "clean-all", 
-			name: "Clean up brackets in all the opened notes",
+			id: "clean-all",
+			name: "Clean up braces in all the opened notes",
 			editorCallback: this.cleanAllMarkdownViews.bind(this),
 		});
 	}
@@ -60,7 +61,7 @@ export default class NoMoreFlicker extends Plugin {
 	}
 
 	private onKeydown(event: KeyboardEvent, view: EditorView) {
-		if (shouldIgnore(view.state)) {
+		if (this.shouldIgnore(view.state)) {
 			return;
 		}
 
@@ -71,6 +72,15 @@ export default class NoMoreFlicker extends Plugin {
 		}
 	}
 
+	private shouldIgnore(state: EditorState): boolean {
+		return selectionSatisfies(
+			state,
+			node => this.settings.disableInTable
+				&& (node.name.includes("HyperMD-table") || node.name.includes("hmd-table"))
+		);
+	}
+
+
 	private isDeletion(event: KeyboardEvent): boolean {
 		return this.settings.deletionKeys.some((key) => is(event, key));
 	}
@@ -80,7 +90,7 @@ export default class NoMoreFlicker extends Plugin {
 			if (leaf.view instanceof MarkdownView) {
 				cleanerCallback(leaf.view.editor);
 			}
-		});		
+		});
 	}
 
 	remakeViewPlugin() {
