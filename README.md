@@ -8,6 +8,9 @@ Turned OFF               | Turned ON
 
 Thank you to those who shared their ideas on the [forum](https://forum.obsidian.md/t/inline-math-allow-white-spaces-before-closing-dollar-signs/63551)!
 
+> [!WARNING]
+> Make sure you understand [how this plugin works](#how-does-it-work) before using it.
+
 ## Support Development
 
 If you are enjoying this plugin, please consider supporting me by buying me a coffee!
