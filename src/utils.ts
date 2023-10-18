@@ -32,7 +32,6 @@ export function selectionSatisfies(state: EditorState, predicate: (node: SyntaxN
             from: line.from,
             to: line.to,
             enter: node => {
-                printNode(node, state);
                 if (predicate(node)) {
                     ret = true;
                 }
