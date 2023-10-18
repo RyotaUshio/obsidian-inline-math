@@ -63,6 +63,7 @@ export class NoMoreFlickerSettingTab extends PluginSettingTab {
                                     this.plugin.settings.deletionKeys.remove(key);
                                     listDeletionKeys();
                                     await this.plugin.saveSettings();
+                                    this.display();
                                 });
                         });
                     return item;
