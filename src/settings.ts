@@ -95,8 +95,8 @@ export class NoMoreFlickerSettingTab extends PluginSettingTab {
         });
 
         new Setting(containerEl)
-            .setName("Disable in table")
-            .setDesc("If turned on, braces won't be inserted in table. Decorations & atomic ranges are enabled regardless of this setting.")
+            .setName("Disable in tables")
+            .setDesc("If turned on, braces won't be inserted in tables. Decorations & atomic ranges are enabled regardless of this setting.")
             .addToggle((toggle) => {
                 toggle.setValue(this.plugin.settings.disableInTable)
                     .onChange(async (disable) => {
