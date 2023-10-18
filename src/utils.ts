@@ -38,6 +38,5 @@ export function selectionSatisfies(state: EditorState, predicate: (node: SyntaxN
             },
         });
     }
-
     return ret;
 }

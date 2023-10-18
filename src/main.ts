@@ -1,11 +1,9 @@
-import { EditorState } from '@codemirror/state';
+import { EditorState, Transaction } from '@codemirror/state';
 import { MarkdownView, Plugin } from 'obsidian';
-import { Extension, Prec } from '@codemirror/state';
-import { EditorView } from '@codemirror/view';
+import { Extension } from '@codemirror/state';
 
 import { DEFAULT_SETTINGS, NoMoreFlickerSettingTab, NoMoreFlickerSettings } from './settings';
-import { deletionHandler, insertionHandler } from './handlers';
-import { is } from './key';
+import { getChangesForDeletion, getChangesForInsertion } from './handlers';
 import { cleanerCallback } from 'cleaner';
 import { createViewPlugin } from 'decoration_and_atomic-range';
 import { selectionSatisfies } from 'utils';
@@ -18,27 +16,21 @@ export default class NoMoreFlicker extends Plugin {
 	async onload() {
 
 		/** Settings */
-
+		
 		await this.loadSettings();
 		await this.saveSettings();
 		this.addSettingTab(new NoMoreFlickerSettingTab(this.app, this));
 
 
-		/** Decorations & atomic ranges */
+		/** Editor extensions */
 
 		this.registerEditorExtension(this.viewPlugin);
 		this.remakeViewPlugin();
-
-
-		/** Key event handlers */
-
-		this.registerEditorExtension(Prec.highest(EditorView.domEventHandlers({
-			"keydown": this.onKeydown.bind(this)
-		})));
+		this.registerEditorExtension(this.makeTransactionFilter());
 
 
 		/** Clean-up commands */
-
+		
 		this.addCommand({
 			id: "clean",
 			name: "Clean up braces in this note",
@@ -60,16 +52,21 @@ export default class NoMoreFlicker extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	private onKeydown(event: KeyboardEvent, view: EditorView) {
-		if (this.shouldIgnore(view.state)) {
-			return;
-		}
-
-		if (this.isDeletion(event)) {
-			deletionHandler(view);
-		} else if (!event.ctrlKey && !event.altKey && !event.metaKey && !event.shiftKey) {
-			insertionHandler(view);
-		}
+	private makeTransactionFilter() {
+		return EditorState.transactionFilter.of(tr => {
+			if (this.shouldIgnore(tr.startState)) {
+				return tr;
+			}
+			const userEvent = tr.annotation(Transaction.userEvent);
+			if (userEvent?.split('.')[0] == 'input') {
+				const changes = getChangesForInsertion(tr.startState);
+				return [tr, { changes }];
+			} else if (userEvent?.split('.')[0] == 'delete') {
+				const changes = getChangesForDeletion(tr.startState);
+				return [tr, { changes }];
+			}
+			return tr;
+		});
 	}
 
 	private shouldIgnore(state: EditorState): boolean {
@@ -78,11 +75,6 @@ export default class NoMoreFlicker extends Plugin {
 			node => this.settings.disableInTable
 				&& (node.name.includes("HyperMD-table") || node.name.includes("hmd-table"))
 		);
-	}
-
-
-	private isDeletion(event: KeyboardEvent): boolean {
-		return this.settings.deletionKeys.some((key) => is(event, key));
 	}
 
 	private cleanAllMarkdownViews() {

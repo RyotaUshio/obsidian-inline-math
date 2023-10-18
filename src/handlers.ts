@@ -1,16 +1,15 @@
-import { ChangeSpec } from '@codemirror/state';
+import { ChangeSpec, EditorState, Transaction } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
-import { EditorView } from '@codemirror/view';
 
 import { isInlineMathBegin, isInlineMathEnd, printNode } from './utils';
 
 
-export function deletionHandler(view: EditorView) {
-    
-    const range = view.state.selection.main;
+export function getChangesForDeletion(state: EditorState): ChangeSpec {
+
+    const range = state.selection.main;
     const from = range.empty ? range.from - 4 : range.from;
     const to = range.to;
-    const text = view.state.sliceDoc(from, to)
+    const text = state.sliceDoc(from, to)
     const index = text.lastIndexOf("$");
     // console.log(
     //     `range: ${range.from}-${range.to}\n`
@@ -19,57 +18,60 @@ export function deletionHandler(view: EditorView) {
     //     + `index = ${index}`
     // );
     if (index == -1) {
-        return;
+        return [];
     }
 
-    const doc = view.state.doc.toString();
+    const doc = state.doc.toString();
     const indexNextDollar = doc.indexOf("$", from + index + 1);
     const indexPrevDollar = doc.lastIndexOf("$", from);
     // console.log(
-    //     `!! ${indexPrevDollar}:${indexNextDollar}: "${view.state.sliceDoc(indexPrevDollar, indexNextDollar)}"`
+    //     `!! ${indexPrevDollar}:${indexNextDollar}: "${state.sliceDoc(indexPrevDollar, indexNextDollar)}"`
     // );
-    const tree = syntaxTree(view.state);
+    const tree = syntaxTree(state);
 
     const changes: ChangeSpec[] = [];
     tree.iterate({
         from: indexPrevDollar,
         to: indexNextDollar >= 0 ? indexNextDollar : to,
         enter(node) {
-            // printNode(node, view.state);
-            if (isInlineMathBegin(node, view.state)
-            && view.state.sliceDoc(node.to, node.to + 3) == "{} ") {
+            // printNode(node, state);
+            if (isInlineMathBegin(node, state)
+                && state.sliceDoc(node.to, node.to + 3) == "{} ") {
                 changes.push({ from: node.to, to: node.to + 3 });
-            } else if (isInlineMathEnd(node, view.state)
-                && view.state.sliceDoc(node.from - 3, node.from) == " {}") {
+            } else if (isInlineMathEnd(node, state)
+                && state.sliceDoc(node.from - 3, node.from) == " {}") {
                 changes.push({ from: node.from - 3, to: node.from });
             }
         }
     });
-    view.dispatch({ changes });
+    return changes;
 }
 
-export function insertionHandler(view: EditorView) {
-    const tree = syntaxTree(view.state);
-    const range = view.state.selection.main;
-    const doc = view.state.doc.toString();
+export function getChangesForInsertion(state: EditorState): ChangeSpec {
+    const tree = syntaxTree(state);
+    const range = state.selection.main;
+    const doc = state.doc.toString();
     const indexNextDollar = doc.indexOf("$", range.to);
     const indexPrevDollar = doc.lastIndexOf("$", range.from);
+    let changes: ChangeSpec[] = [];
 
     if (indexNextDollar >= 0) {
         tree.iterate({
             from: indexPrevDollar,
             to: indexNextDollar + 1,
             enter(node) {
-                if (isInlineMathBegin(node, view.state)) {
-                    if (!(view.state.sliceDoc(node.to, node.to + 3) == "{} ")) {
-                        view.dispatch({ changes: { from: node.to, insert: "{} " } });
+                if (isInlineMathBegin(node, state)) {
+                    if (!(state.sliceDoc(node.to, node.to + 3) == "{} ")) {
+                        changes.push({ from: node.to, insert: "{} " });
                     }
-                } else if (isInlineMathEnd(node, view.state)) {
-                    if (!(view.state.sliceDoc(node.from - 3, node.from) == " {}")) {
-                        view.dispatch({ changes: { from: node.from, insert: " {}" } });
+                } else if (isInlineMathEnd(node, state)) {
+                    if (!(state.sliceDoc(node.from - 3, node.from) == " {}")) {
+                        changes.push({ from: node.from, insert: " {}" });
                     }
                 }
             }
         });
     }
+
+    return changes;
 }
