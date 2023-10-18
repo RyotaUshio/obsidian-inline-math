@@ -7,6 +7,7 @@ import { deletionHandler, insertionHandler } from './handlers';
 import { is } from './key';
 import { cleanerCallback } from 'cleaner';
 import { createViewPlugin } from 'decoration_and_atomic-range';
+import { shouldIgnore } from 'utils';
 
 
 export default class NoMoreFlicker extends Plugin {
@@ -59,6 +60,10 @@ export default class NoMoreFlicker extends Plugin {
 	}
 
 	private onKeydown(event: KeyboardEvent, view: EditorView) {
+		if (shouldIgnore(view.state)) {
+			return;
+		}
+
 		if (this.isDeletion(event)) {
 			deletionHandler(view);
 		} else if (!event.ctrlKey && !event.altKey && !event.metaKey && !event.shiftKey) {
