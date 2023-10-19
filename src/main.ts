@@ -70,10 +70,9 @@ export default class NoMoreFlicker extends Plugin {
 	}
 
 	private shouldIgnore(state: EditorState): boolean {
-		return selectionSatisfies(
+		return this.settings.disableInTable && selectionSatisfies(
 			state,
-			node => this.settings.disableInTable
-				&& (node.name.includes("HyperMD-table") || node.name.includes("hmd-table"))
+			node => node.name.includes("HyperMD-table") || node.name.includes("hmd-table")
 		);
 	}
 
