@@ -11,12 +11,6 @@ Thank you to those who shared their ideas on the [forum](https://forum.obsidian.
 > [!WARNING]
 > Make sure you understand [how this plugin works](#how-does-it-work) before using it.
 
-## Support Development
-
-If you are enjoying this plugin, please consider supporting me by buying me a coffee!
-
-<a href="https://www.buymeacoffee.com/ryotaushio" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
-
 ## Installation
 
 You can find it in Obsidian's community plugins browser.
@@ -40,9 +34,25 @@ ${} ... {}$
 
 These braces are then hidden so that you are not disturbed by them.
 
-## Don't like the brace pollution? Don't worry!
+And importantly, they are automatically deleted when you escape from `$...$`, so you don't need to worry messing up your notes with braces!
 
-You can always safely clean up the braces by running the following commands:
+> [!Note]
+> If you're interested in what's going on under the hood, go to the plugin setting > Debug mode, and turn on "Disable decorations".
+
+But just in case, this plugin also offers the following commands to surely clean up the braces:
 
 - **Clean up braces in this note**
 - **Clean up braces in all the opened notes**
+
+## Reporting issues
+
+If you find something is not working well, please report it by [filing an issue](https://github.com/RyotaUshio/obsidian-inline-math/issues). Attatching the following information is highly appreciated:
+
+- The result of the "Show debug info" command
+- Screen recording of what happened, with `Debug mode > Disable decorations` turned on. If possible, please visualize your keystroke with a tool like [KeyCastr](https://github.com/keycastr/keycastr).
+
+## Support Development
+
+If you are enjoying this plugin, please consider supporting me by buying me a coffee!
+
+<a href="https://www.buymeacoffee.com/ryotaushio" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
