@@ -1,9 +1,9 @@
-import { EditorState, Transaction } from '@codemirror/state';
+import { EditorState, Transaction, ChangeSet, TransactionSpec } from '@codemirror/state';
 import { MarkdownView, Plugin } from 'obsidian';
 import { Extension } from '@codemirror/state';
 
 import { DEFAULT_SETTINGS, NoMoreFlickerSettingTab, NoMoreFlickerSettings } from './settings';
-import { getChangesForDeletion, getChangesForInsertion } from './handlers';
+import { getChangesForDeletion, getChangesForInsertion, getChangesForSelection } from './handlers';
 import { cleanerCallback } from 'cleaner';
 import { createViewPlugin } from 'decoration_and_atomic-range';
 import { selectionSatisfies } from 'utils';
@@ -16,7 +16,7 @@ export default class NoMoreFlicker extends Plugin {
 	async onload() {
 
 		/** Settings */
-		
+
 		await this.loadSettings();
 		await this.saveSettings();
 		this.addSettingTab(new NoMoreFlickerSettingTab(this.app, this));
@@ -30,7 +30,7 @@ export default class NoMoreFlicker extends Plugin {
 
 
 		/** Clean-up commands */
-		
+
 		this.addCommand({
 			id: "clean",
 			name: "Clean up braces in this note",
@@ -57,13 +57,22 @@ export default class NoMoreFlicker extends Plugin {
 			if (this.shouldIgnore(tr.startState)) {
 				return tr;
 			}
-			const userEvent = tr.annotation(Transaction.userEvent);
-			if (userEvent?.split('.')[0] == 'input') {
-				const changes = getChangesForInsertion(tr.startState);
-				return [tr, { changes }];
-			} else if (userEvent?.split('.')[0] == 'delete') {
-				const changes = getChangesForDeletion(tr.startState);
-				return [tr, { changes }];
+			const userEvent = tr.annotation(Transaction.userEvent)?.split('.')[0];
+			if (userEvent) {
+				if (userEvent === 'input') {
+					const changes = getChangesForInsertion(tr.startState, tr.changes);
+					return [tr, { changes }];
+				}
+				else if (userEvent === 'select' && tr.selection) {
+					// Even if we cannot access to the new state (tr.state), 
+					// we can still access to the new selection (tr.selection)!!
+					const changes = getChangesForSelection(tr.startState, tr.selection);
+					return [tr, { changes }];
+				}
+				else if (userEvent === 'delete') {
+					const changes = getChangesForDeletion(tr.startState);
+					return [tr, { changes }];
+				}
 			}
 			return tr;
 		});
