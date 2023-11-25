@@ -57,23 +57,24 @@ export default class NoMoreFlicker extends Plugin {
 			if (this.shouldIgnore(tr.startState)) {
 				return tr;
 			}
+
 			const userEvent = tr.annotation(Transaction.userEvent)?.split('.')[0];
-			if (userEvent) {
-				if (userEvent === 'input') {
-					const changes = getChangesForInsertion(tr.startState, tr.changes);
-					return [tr, { changes }];
-				}
-				else if (userEvent === 'select' && tr.selection) {
-					// Even if we cannot access to the new state (tr.state), 
-					// we can still access to the new selection (tr.selection)!!
-					const changes = getChangesForSelection(tr.startState, tr.selection);
-					return [tr, { changes }];
-				}
-				else if (userEvent === 'delete') {
-					const changes = getChangesForDeletion(tr.startState);
-					return [tr, { changes }];
-				}
+			
+			if (userEvent === 'input') {
+				const changes = getChangesForInsertion(tr.startState, tr.changes);
+				return [tr, { changes }];
 			}
+			else if (userEvent === 'select' && tr.selection) {
+				// Even if we cannot access to the new state (tr.state), 
+				// we can still access to the new selection (tr.selection)!!
+				const changes = getChangesForSelection(tr.startState, tr.selection);
+				return [tr, { changes }];
+			}
+			else if (userEvent === 'delete') {
+				const changes = getChangesForDeletion(tr.startState);
+				return [tr, { changes }];
+			}
+
 			return tr;
 		});
 	}
