@@ -46,11 +46,9 @@ export function getChangesForInsertion(state: EditorState, changes: ChangeSet): 
     const doc = state.doc.toString();
     const changesToAdd: ChangeSpec[] = [];
 
-    const changesWithLeadingWhitespace: Map<number, boolean> = new Map();
-    changes.iterChanges((fromA, toA, fromB, toB, inserted) => {
-        if (inserted.toString().startsWith(' ')) {
-            changesWithLeadingWhitespace.set(fromA, true);
-        }
+    const beginningOfChanges: Map<number, boolean> = new Map();
+    changes.iterChangedRanges((fromA, toA, fromB, toB) => {
+        beginningOfChanges.set(fromA, true);
     });
 
     for (const range of state.selection.ranges) {
@@ -62,7 +60,9 @@ export function getChangesForInsertion(state: EditorState, changes: ChangeSet): 
             if (indexPrevDollar >= 0) {
                 const node = tree.cursorAt(indexPrevDollar, 1).node;
                 if (isInlineMathBegin(node, state)) {
-                    if (indexPrevDollar === range.from - 1 && changesWithLeadingWhitespace.has(range.from)) {
+                    if (indexPrevDollar === range.from - 1 && beginningOfChanges.has(range.from)) {
+                        // without this, 
+                        // inserting "a" between the leading "$" and "x" of "$x$" results in "$a{} x {}$"
                         changesToAdd.push({ from: indexPrevDollar, to: range.from, insert: "${} " });
                         continue;
                     }
