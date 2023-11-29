@@ -3,7 +3,7 @@ import { MarkdownView, Plugin } from 'obsidian';
 import { Extension } from '@codemirror/state';
 
 import { DEFAULT_SETTINGS, NoMoreFlickerSettingTab, NoMoreFlickerSettings } from './settings';
-import { getChangesForDeletion, getChangesForInsertion, getChangesForSelection } from './handlers';
+import { getChangesForDeletion, getChangesForInsertion, getChangesForSelection, handleLatexSuiteTabout } from './handlers';
 import { cleanerCallback } from 'cleaner';
 import { createViewPlugin } from 'decoration_and_atomic-range';
 import { selectionSatisfies } from 'utils';
@@ -59,20 +59,21 @@ export default class NoMoreFlicker extends Plugin {
 			}
 
 			const userEvent = tr.annotation(Transaction.userEvent)?.split('.')[0];
-			
+
 			if (userEvent === 'input') {
 				const changes = getChangesForInsertion(tr.startState, tr.changes);
 				return [tr, { changes }];
-			}
-			else if (userEvent === 'select' && tr.selection) {
+			} else if (userEvent === 'select' && tr.selection) {
 				// Even if we cannot access to the new state (tr.state), 
 				// we can still access to the new selection (tr.selection)!!
 				const changes = getChangesForSelection(tr.startState, tr.selection);
 				return [tr, { changes }];
-			}
-			else if (userEvent === 'delete') {
+			} else if (userEvent === 'delete') {
 				const changes = getChangesForDeletion(tr.startState);
 				return [tr, { changes }];
+			} else if (userEvent === undefined && tr.selection && this.isLatexSuiteTaboutEnabled()) {
+				const selection = handleLatexSuiteTabout(tr.startState, tr.selection);
+				return [tr, { selection }];
 			}
 
 			return tr;
@@ -84,6 +85,10 @@ export default class NoMoreFlicker extends Plugin {
 			state,
 			node => node.name.includes("HyperMD-table") || node.name.includes("hmd-table")
 		);
+	}
+
+	private isLatexSuiteTaboutEnabled(): boolean {
+		return !!(this.app as any).plugins.plugins['obsidian-latex-suite']?.settings.taboutEnabled;
 	}
 
 	private cleanAllMarkdownViews() {
