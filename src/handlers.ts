@@ -1,7 +1,7 @@
-import { ChangeSpec, EditorState, EditorSelection, ChangeSet } from '@codemirror/state';
+import { ChangeSpec, EditorState, EditorSelection, ChangeSet, SelectionRange } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 
-import { isInlineMathBegin, isInlineMathEnd, printNode } from './utils';
+import { isInlineMathBegin, isInlineMathEnd } from './utils';
 
 
 export function getChangesForDeletion(state: EditorState): ChangeSpec {
@@ -44,7 +44,7 @@ export function getChangesForDeletion(state: EditorState): ChangeSpec {
 export function getChangesForInsertion(state: EditorState, changes: ChangeSet): ChangeSpec {
     const tree = syntaxTree(state);
     const doc = state.doc.toString();
-    let changesToAdd: ChangeSpec[] = [];
+    const changesToAdd: ChangeSpec[] = [];
 
     const changesWithLeadingWhitespace: Map<number, boolean> = new Map();
     changes.iterChanges((fromA, toA, fromB, toB, inserted) => {
@@ -101,9 +101,10 @@ export function getChangesForInsertion(state: EditorState, changes: ChangeSet): 
 export function getChangesForSelection(state: EditorState, newSelection: EditorSelection): ChangeSpec {
     const tree = syntaxTree(state);
     const doc = state.doc.toString();
-    let changes: ChangeSpec[] = [];
+    const changes: ChangeSpec[] = [];
 
-    for (const range of newSelection.ranges) {
+    for (let i = 0; i < newSelection.ranges.length; i++) {
+        const range = newSelection.ranges[i];
         const indexNextDollar = doc.indexOf("$", range.to);
         const indexPrevDollar = doc.lastIndexOf("$", range.from - 1);
 
@@ -127,4 +128,27 @@ export function getChangesForSelection(state: EditorState, newSelection: EditorS
     }
 
     return changes;
+}
+
+// handle Latex Suite's tabout: https://github.com/RyotaUshio/obsidian-inline-math/issues/4
+export function handleLatexSuiteTabout(state: EditorState, newSelection: EditorSelection): EditorSelection {
+    const tree = syntaxTree(state);
+    const doc = state.doc.toString();
+    const newRanges: SelectionRange[] = [];
+
+    for (let i = 0; i < newSelection.ranges.length; i++) {
+        const range = newSelection.ranges[i];
+        const indexNextDollar = doc.indexOf("$", range.to);
+
+        if (indexNextDollar >= 0) {
+            const node = tree.cursorAt(indexNextDollar, 1).node;
+            if (range.from === range.to && range.to === indexNextDollar && isInlineMathEnd(node, state) && state.sliceDoc(node.from - 3, node.from) === " {}") {
+                newRanges.push(EditorSelection.cursor(node.to));
+                continue;
+            }
+        }
+        newRanges.push(range);
+    }
+
+    return EditorSelection.create(newRanges, newSelection.mainIndex);
 }
