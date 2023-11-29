@@ -71,11 +71,12 @@ export default class NoMoreFlicker extends Plugin {
 			} else if (userEvent === 'delete') {
 				const changes = getChangesForDeletion(tr.startState);
 				return [tr, { changes }];
-			} else if (userEvent === undefined && tr.selection && this.isLatexSuiteTaboutEnabled()) {
+			} else if (userEvent === undefined && !tr.docChanged && tr.selection && this.isLatexSuiteTaboutEnabled()) {
+				// !tr.docChanged is needed to filter out transactions produced by Latex Suite's matrix shortcuts feature
 				const selection = handleLatexSuiteTabout(tr.startState, tr.selection);
 				return [tr, { selection }];
 			}
-			
+
 			return tr;
 		});
 	}
