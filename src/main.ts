@@ -4,7 +4,7 @@ import { Extension } from '@codemirror/state';
 
 import { DEFAULT_SETTINGS, NoMoreFlickerSettingTab, NoMoreFlickerSettings } from './settings';
 import { cleanerCallback } from 'cleaner';
-import { createViewPlugin } from 'decoration_and_atomic-range';
+import { createViewPlugin } from 'decoration-and-atomic-range';
 import { selectionSatisfies } from 'utils';
 import { makeTransactionFilter } from 'transaction-filter';
 

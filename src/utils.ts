@@ -1,8 +1,9 @@
 import { syntaxTree } from '@codemirror/language';
 import { EditorState } from '@codemirror/state';
 import { SyntaxNodeRef } from '@lezer/common';
-import { INLINE_MATH_BEGIN, MATH_END } from 'node_names';
 
+const INLINE_MATH_BEGIN = "formatting_formatting-math_formatting-math-begin_keyword_math";
+const MATH_END = "formatting_formatting-math_formatting-math-end_keyword_math_math-";
 
 export function nodeText(node: SyntaxNodeRef, state: EditorState): string {
     return state.sliceDoc(node.from, node.to);
