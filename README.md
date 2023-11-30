@@ -32,9 +32,9 @@ So, when an inline math `$...$` is found, this plugin inserts `{}` at the beginn
 ${} ... {}$
 ```
 
-These braces are then hidden so that you are not disturbed by them.
+These braces are then **hidden** so that you are not disturbed by them.
 
-And importantly, they are automatically deleted when you escape from `$...$`, so you don't need to worry about messing up your notes with braces!
+***And importantly, they are automatically deleted when you escape from `$...$`, so you don't need to worry about messing up your notes with braces!***
 
 > [!Note]
 > If you're interested in what's going on under the hood, go to the plugin setting > Debug mode, and turn on "Disable decorations".
