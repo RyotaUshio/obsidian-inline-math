@@ -1,7 +1,7 @@
 {
 	"id": "inline-math",
 	"name": "No more flickering inline math",
-	"version": "0.3.2",
+	"version": "0.3.3",
 	"minAppVersion": "1.3.0",
 	"description": "No longer disturbed by flickering inline math in Obsidian.",
 	"author": "Ryota Ushio",
