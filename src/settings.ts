@@ -54,7 +54,7 @@ export class NoMoreFlickerSettingTab extends PluginSettingTab {
         new Setting(containerEl)
             .setName("Disable atomic ranges")
             .setDesc(createFragment((el) => {
-                el.createSpan({ text: "If turned on, atomic ranges to treat \"" });
+                el.createSpan({ text: "If turned on, atomic ranges to treat each of \"" });
                 el.createEl("code", { text: "${} " });
                 el.createSpan({ text: "\" or \"" });
                 el.createEl("code", { text: " {}$" });

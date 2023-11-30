@@ -1,9 +1,9 @@
-import { EditorState, Transaction, ChangeSet, TransactionSpec } from '@codemirror/state';
+import { EditorState, Transaction } from '@codemirror/state';
 import { MarkdownView, Plugin } from 'obsidian';
 import { Extension } from '@codemirror/state';
 
 import { DEFAULT_SETTINGS, NoMoreFlickerSettingTab, NoMoreFlickerSettings } from './settings';
-import { getChangesForDeletion, getChangesForInsertion, getChangesForSelection, handleLatexSuiteTabout } from './handlers';
+import { getChangesForDeletion, getChangesForInsertion, getChangesForSelection, handleLatexSuiteBoxing, handleLatexSuiteTabout } from './handlers';
 import { cleanerCallback } from 'cleaner';
 import { createViewPlugin } from 'decoration_and_atomic-range';
 import { selectionSatisfies } from 'utils';
@@ -11,7 +11,18 @@ import { selectionSatisfies } from 'utils';
 
 export default class NoMoreFlicker extends Plugin {
 	settings: NoMoreFlickerSettings;
+	/** 
+	 * a view plugin that provides
+	 * - decorations to hide braces adjacent to "$"s
+	 * - & atomic ranges to treat each of "${} " and " {}$" as one character
+	 */
 	viewPlugin: Extension[] = [];
+	/** 
+	 * Indicates whether the previous transaction was the first of the two transactions
+	 * (1. text replacement & 2. cursor position change) that Latex Suite's "box current equation" 
+	 * command produces or not. See the commend in the makeTransactionFilter() method for details.
+	 */
+	_latexSuiteBoxing: boolean = false;
 
 	async onload() {
 
@@ -71,10 +82,41 @@ export default class NoMoreFlicker extends Plugin {
 			} else if (userEvent === 'delete') {
 				const changes = getChangesForDeletion(tr.startState);
 				return [tr, { changes }];
-			} else if (userEvent === undefined && !tr.docChanged && tr.selection && this.isLatexSuiteTaboutEnabled()) {
-				// !tr.docChanged is needed to filter out transactions produced by Latex Suite's matrix shortcuts feature
-				const selection = handleLatexSuiteTabout(tr.startState, tr.selection);
-				return [tr, { selection }];
+			} else if (userEvent === undefined) {
+				/**
+				 * This dirty block is dedicated to keeping compatibility with the following features of Latex Suite:
+				 * 
+				 * 1. The "box current equation" command: This command will wrap the equation that the cursor is placed on 
+				 *    with a `\boxed{}`. When triggered on an inline math of the form "${} ... {}$", the hidden braces are
+				 *    accidentally included in the `\boxed{}`.
+				 * 
+				 * 2. Tabout: When there is no braces after the cursor, pressing Tab will 
+				 *    make the cursor escape from `$...$`. When there is a pair of braces after the cursor,
+				 *    pressing Tab will move the cursor after the closing brace.
+				 * 
+				 *    This is problematic because the braces that this plugin inserts right before the closing `$`
+				 *    should not be counted as braces by Tabout; it causes the cursor to be placed between " {}" and "$".
+				 */
+
+				if (tr.docChanged && !tr.selection) {
+					// `tr` is the first transaction (text replacement) of Latex Suite's "box current equation" command
+					const changes = handleLatexSuiteBoxing(tr.startState, tr.changes);
+					if (changes) {
+						this._latexSuiteBoxing = true;
+						return { changes };
+					}
+				} else if (!tr.docChanged && tr.selection) {
+					// !tr.docChanged is needed to filter out transactions produced by Latex Suite's matrix shortcuts feature
+					if (this._latexSuiteBoxing) {
+						// `tr` is the second transaction (text replacement) of Latex Suite's "box current equation" command
+						this._latexSuiteBoxing = false;
+						return { selection: { anchor: tr.selection.main.anchor - 3 } };	// 3 == "{} ".length					
+					} else {
+						// `tr` can be a transaction produced by Tabout
+						const selection = handleLatexSuiteTabout(tr.startState, tr.selection);
+						return [tr, { selection }];
+					}
+				}
 			}
 
 			return tr;
@@ -86,10 +128,6 @@ export default class NoMoreFlicker extends Plugin {
 			state,
 			node => node.name.includes("HyperMD-table") || node.name.includes("hmd-table")
 		);
-	}
-
-	private isLatexSuiteTaboutEnabled(): boolean {
-		return !!(this.app as any).plugins.plugins['obsidian-latex-suite']?.settings.taboutEnabled;
 	}
 
 	private cleanAllMarkdownViews() {
