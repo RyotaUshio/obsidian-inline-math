@@ -44,6 +44,14 @@ But just in case, this plugin also offers the following commands to surely clean
 - **Clean up braces in this note**
 - **Clean up braces in all the opened notes**
 
+## Companion plugins
+
+Here's a list of other math-related plugins I've developed:
+
+- [Math Booster](https://github.com/RyotaUshio/obsidian-math-booster)
+- [Better Math in Callouts & Blockquotes](https://github.com/RyotaUshio/obsidian-math-in-callout)
+- [MathJax Preamble Manager](https://github.com/RyotaUshio/obsidian-mathjax-preamble-manager)
+
 ## Reporting issues
 
 If you find something is not working well, please report it by [filing an issue](https://github.com/RyotaUshio/obsidian-inline-math/issues). Attatching the following information is highly appreciated:
