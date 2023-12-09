@@ -48,7 +48,7 @@ But just in case, this plugin also offers the following commands to surely clean
 
 Here's a list of other math-related plugins I've developed:
 
-- [Math Booster](https://github.com/RyotaUshio/obsidian-math-booster)
+- [LaTeX-like Theorem & Equation Referencer](https://github.com/RyotaUshio/obsidian-latex-theorem-equation-referencer)
 - [Better Math in Callouts & Blockquotes](https://github.com/RyotaUshio/obsidian-math-in-callout)
 - [MathJax Preamble Manager](https://github.com/RyotaUshio/obsidian-mathjax-preamble-manager)
 - [Auto-\\displaystyle Inline Math](https://github.com/RyotaUshio/obsidian-auto-displaystyle-inline-math)
