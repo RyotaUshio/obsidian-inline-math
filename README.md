@@ -25,7 +25,11 @@ Also, you can participate in the beta-testing of the latest version by installin
 
 ## How does it work?
 
-It's simple. Obsidian doesn't recognize `$[space]...$` or `$...[space]$` as a math.
+It's simple. You can see what's going on under the hood by going to the plugin settings > "Debug mode" and turning on "Disable decorations".
+
+https://github.com/RyotaUshio/obsidian-inline-math/assets/72342591/cde99cc2-b1f9-4521-993f-c7bc63b5a9d4
+
+Obsidian doesn't recognize `$[space]...$` or `$...[space]$` as a math.
 So, when an inline math `$...$` is found, this plugin inserts `{}` at the beginning and end of it:
 
 ```latex
@@ -35,9 +39,6 @@ ${} ... {}$
 These braces are then **hidden** so that you are not disturbed by them.
 
 ***And importantly, they are automatically deleted when you escape from `$...$`, so you don't need to worry about messing up your notes with braces!***
-
-> [!Note]
-> If you're interested in what's going on under the hood, go to the plugin setting > Debug mode, and turn on "Disable decorations".
 
 But just in case, this plugin also offers the following commands to surely clean up the braces:
 
