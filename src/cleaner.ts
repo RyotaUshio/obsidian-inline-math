@@ -2,7 +2,7 @@ import { ChangeSpec } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 import { EditorView } from '@codemirror/view';
 
-import { isInlineMathBegin, isInlineMathEnd, printNode } from './utils';
+import { isInlineMathBegin, isInlineMathEnd } from './utils';
 import { Editor } from 'obsidian';
 
 

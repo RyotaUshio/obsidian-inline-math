@@ -27,7 +27,7 @@ export function isInlineMathEnd(node: SyntaxNodeRef, state: EditorState): boolea
 export function selectionSatisfies(state: EditorState, predicate: (node: SyntaxNodeRef) => boolean): boolean {
     let ret = false;
     const tree = syntaxTree(state);
-    for (const { from, to } of state.selection.ranges) {
+    for (const { from } of state.selection.ranges) {
         const line = state.doc.lineAt(from);
         tree.iterate({
             from: line.from,

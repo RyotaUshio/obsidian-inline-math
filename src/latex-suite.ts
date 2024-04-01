@@ -48,8 +48,7 @@ export function handleLatexSuiteTabout(state: EditorState, newSelection: EditorS
     const doc = state.doc.toString();
     const newRanges: SelectionRange[] = [];
 
-    for (let i = 0; i < newSelection.ranges.length; i++) {
-        const range = newSelection.ranges[i];
+    for (const range of newSelection.ranges) {
         const indexNextDollar = doc.indexOf("$", range.to);
 
         if (indexNextDollar >= 0) {

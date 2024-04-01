@@ -22,7 +22,7 @@ export default class NoMoreFlicker extends Plugin {
 	 * (1. text replacement & 2. cursor position change) that Latex Suite's "box current equation" 
 	 * command produces or not. See the commend in the makeTransactionFilter() method for details.
 	 */
-	_latexSuiteBoxing: boolean = false;
+	_latexSuiteBoxing = false;
 
 	async onload() {
 

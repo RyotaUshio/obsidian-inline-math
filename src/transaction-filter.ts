@@ -3,6 +3,7 @@ import { syntaxTree } from '@codemirror/language';
 import { isInlineMathBegin, isInlineMathEnd } from './utils';
 import NoMoreFlicker from 'main';
 import { handleLatexSuite } from 'latex-suite';
+import { editorEditorField } from 'obsidian';
 
 
 export const makeTransactionFilter = (plugin: NoMoreFlicker): Extension => {
@@ -12,6 +13,14 @@ export const makeTransactionFilter = (plugin: NoMoreFlicker): Extension => {
         const userEvent = tr.annotation(Transaction.userEvent)?.split('.')[0];
 
         if (userEvent === 'input') {
+            if (plugin.settings.disableOnIME) {
+                // Do nothing when the user is using IME input to avoid troubles that happen
+                // when using Latex Suite's tabout feature to escape from a math and then typing
+                // CJK characters
+                const view = tr.startState.field(editorEditorField);
+                if (view.composing) return tr;
+            }
+
             const changes = getChangesForInsertion(tr.startState, tr.changes);
             return [tr, { changes }];
         } else if (userEvent === 'select' && tr.selection) {
@@ -75,9 +84,9 @@ export function getChangesForInsertion(state: EditorState, changes: ChangeSet): 
     const doc = state.doc.toString();
     const changesToAdd: ChangeSpec[] = [];
 
-    const beginningOfChanges: Map<number, boolean> = new Map();
+    const beginningOfChanges = new Set<number>();
     changes.iterChangedRanges((fromA, toA, fromB, toB) => {
-        beginningOfChanges.set(fromA, true);
+        beginningOfChanges.add(fromA);
     });
 
     for (const range of state.selection.ranges) {

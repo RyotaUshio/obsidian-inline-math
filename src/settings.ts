@@ -4,6 +4,7 @@ import NoMoreFlicker from "./main";
 
 export interface NoMoreFlickerSettings {
     disableInTable: boolean;
+    disableOnIME: boolean;
     disableDecorations: boolean;
     disableAtomicRanges: boolean;
 }
@@ -11,6 +12,7 @@ export interface NoMoreFlickerSettings {
 
 export const DEFAULT_SETTINGS: NoMoreFlickerSettings = {
     disableInTable: false,
+    disableOnIME: true,
     disableDecorations: false,
     disableAtomicRanges: false,
 };
@@ -35,6 +37,17 @@ export class NoMoreFlickerSettingTab extends PluginSettingTab {
                 toggle.setValue(this.plugin.settings.disableInTable)
                     .onChange(async (disable) => {
                         this.plugin.settings.disableInTable = disable;
+                        await this.plugin.saveSettings();
+                    })
+            });
+
+        new Setting(containerEl)
+            .setName("Disable when using IME input")
+            .setDesc("This option can be helpful for avoiding some strange behavior occurring when using IME inputs after escaping from a math block with the Latex Suite plugin's tabout feature.")
+            .addToggle((toggle) => {
+                toggle.setValue(this.plugin.settings.disableOnIME)
+                    .onChange(async (disable) => {
+                        this.plugin.settings.disableOnIME = disable;
                         await this.plugin.saveSettings();
                     })
             });
