@@ -36,7 +36,7 @@ So, when an inline math `$...$` is found, this plugin inserts `{}` at the beginn
 ${} ... {}$
 ```
 
-These braces are then **hidden** so that you are not disturbed by them.
+These braces are then **hidden** so that you are not disturbed by them (, which is disabled in the video above by "Disable decorations").
 
 ***And importantly, they are automatically deleted when you escape from `$...$`, so you don't need to worry about messing up your notes with braces!***
 
