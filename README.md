@@ -6,16 +6,25 @@ Turned OFF               | Turned ON
 :-----------------------:|:------------------------:
 ![Turned OFF](fig/off.gif) | ![Turned ON](fig/on.gif)
 
-Thank you to those who shared their ideas on the [forum](https://forum.obsidian.md/t/inline-math-allow-white-spaces-before-closing-dollar-signs/63551)!
+## Latex Suite compatibility
 
-> [!WARNING]
-> Make sure you understand [how this plugin works](#how-does-it-work) before using it.
+If you are a [Latex Suite](https://github.com/artisticat1/obsidian-latex-suite) user, you will need to modify [the following lines](https://github.com/artisticat1/obsidian-latex-suite/blob/f405de10e7bb13aa03621029a7655a6fce1647bf/src/default_snippets.js#L261-L263) to avoid some conflicts.
 
-## Installation
+```js
+	{trigger: "(", replacement: "($0)$1", options: "mA"},
+	{trigger: "{", replacement: "{$0}$1", options: "mA"},
+	{trigger: "[", replacement: "[$0]$1", options: "mA"},
+```
 
-You can find it in Obsidian's community plugins browser.
+All you have to do is to remove `$1` from `replacement`. If your snippet looks like the following, you are good to go.
 
-Also, you can participate in the beta-testing of the latest version by installing it using [BRAT](https://github.com/TfTHacker/obsidian42-brat).
+```js
+	{trigger: "(", replacement: "($0)", options: "mA"},
+	{trigger: "{", replacement: "{$0}", options: "mA"},
+	{trigger: "[", replacement: "[$0]", options: "mA"},
+```
+
+Thank you @carpetdev for the [insight](https://github.com/RyotaUshio/obsidian-inline-math/issues/6#issuecomment-2442938736)!
 
 ## How does it work?
 
