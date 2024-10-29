@@ -15,13 +15,7 @@ Thank you to those who shared their ideas on the [forum](https://forum.obsidian.
 
 You can find it in Obsidian's community plugins browser.
 
-Also, you can participate in the beta-testing of the latest version by installing it using BRAT. 
-
-1.  Install the [BRAT](obsidian://show-plugin?id=obsidian42-brat) community plugin and enable it.
-2.  Go to **Options**. In the **Beta Plugin List** section, click on the **Add Beta plugin** button.
-3.  Copy and paste `https://github.com/RyotaUshio/obsidian-inline-math` in the pop-up prompt and click on **Add Plugin**.
-4.  (Optional) Turn on **Auto-update plugins at startup** at the top of the page.
-5.  Go to **Community plugins > Installed plugins**. You will find "No more flickering inline math" in the list. Click on the toggle button to enable it.
+Also, you can participate in the beta-testing of the latest version by installing it using [BRAT](https://github.com/TfTHacker/obsidian42-brat).
 
 ## How does it work?
 
@@ -58,6 +52,10 @@ If you find something is not working well, please report it by [filing an issue]
 
 ## Support Development
 
-If you are enjoying this plugin, please consider supporting me by buying me a coffee!
+If you find my plugins useful, please support my work to ensure they continue to work!
 
-<a href="https://www.buymeacoffee.com/ryotaushio" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+<a href="https://github.com/sponsors/RyotaUshio" target="_blank"><img src="https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86" alt="GitHub Sponsors" style="width: 180px; height:auto;"></a>
+
+<a href="https://www.buymeacoffee.com/ryotaushio" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="width: 180px; height:auto;"></a>
+
+<a href='https://ko-fi.com/E1E6U7CJZ' target='_blank'><img height='36' style='border:0px; width: 180px; height:auto;' src='https://storage.ko-fi.com/cdn/kofi2.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>

@@ -6,6 +6,10 @@
 	"description": "No longer disturbed by flickering inline math in Obsidian.",
 	"author": "Ryota Ushio",
 	"authorUrl": "https://github.com/RyotaUshio",
-	"fundingUrl": "https://www.buymeacoffee.com/ryotaushio",
+	"fundingUrl": {
+        "GitHub Sponsor": "https://github.com/sponsors/RyotaUshio",
+        "Buy Me a Coffee": "https://www.buymeacoffee.com/ryotaushio",
+        "Ko-fi": "https://ko-fi.com/ryotaushio"
+    },
 	"isDesktopOnly": false
 }
