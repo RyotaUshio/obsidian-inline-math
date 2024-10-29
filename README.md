@@ -8,7 +8,7 @@ Turned OFF               | Turned ON
 
 ## Latex Suite compatibility
 
-If you are a [Latex Suite](https://github.com/artisticat1/obsidian-latex-suite) user, you will need to modify [the following lines](https://github.com/artisticat1/obsidian-latex-suite/blob/f405de10e7bb13aa03621029a7655a6fce1647bf/src/default_snippets.js#L261-L263) to avoid some conflicts.
+If you are a [Latex Suite](https://github.com/artisticat1/obsidian-latex-suite) user, you will need to modify [the following lines of the default snippet](https://github.com/artisticat1/obsidian-latex-suite/blob/f405de10e7bb13aa03621029a7655a6fce1647bf/src/default_snippets.js#L261-L263) to avoid some conflicts.
 
 ```js
 	{trigger: "(", replacement: "($0)$1", options: "mA"},
