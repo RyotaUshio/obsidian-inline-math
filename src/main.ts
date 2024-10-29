@@ -35,19 +35,6 @@ export default class NoMoreFlicker extends Plugin {
 		this.registerEditorExtension(this.viewPlugin);
 		this.remakeViewPlugin();
 		this.registerEditorExtension(makeTransactionFilter(this));
-
-		/** Clean-up commands */
-		this.addCommand({
-			id: "clean",
-			name: "Clean up braces in this note",
-			editorCallback: cleanerCallback,
-		});
-
-		this.addCommand({
-			id: "clean-all",
-			name: "Clean up braces in all the opened notes",
-			editorCallback: this.cleanAllMarkdownViews.bind(this),
-		});
 	}
 
 	async loadSettings() {

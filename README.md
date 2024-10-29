@@ -40,11 +40,6 @@ These braces are then **hidden** so that you are not disturbed by them (, which 
 
 ***And importantly, they are automatically deleted when you escape from `$...$`, so you don't need to worry about messing up your notes with braces!***
 
-But just in case, this plugin also offers the following commands to surely clean up the braces:
-
-- **Clean up braces in this note**
-- **Clean up braces in all the opened notes**
-
 ## Companion plugins
 
 Here's a list of other math-related plugins I've developed:
