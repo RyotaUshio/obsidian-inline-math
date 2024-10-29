@@ -52,10 +52,13 @@ export class NoMoreFlickerSettingTab extends PluginSettingTab {
                     })
             });
 
-        containerEl.createEl("h4", { text: "Debug mode" })
+        new Setting(containerEl)
+            .setName("Debug mode")
+            .setHeading();
+
         new Setting(containerEl)
             .setName("Disable decorations")
-            .setDesc("If turned on, decorations to hide braces adjacent to dollar signs are disabled.")
+            .setDesc("If turned on, decorations to hide braces adjacent to dollar signs are disabled. This is especially useful when you want to see what this plugin does under the hood.")
             .addToggle((toggle) => {
                 toggle.setValue(this.plugin.settings.disableDecorations)
                     .onChange(async (disable) => {
