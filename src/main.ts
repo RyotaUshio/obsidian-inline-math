@@ -1,9 +1,8 @@
 import { EditorState } from '@codemirror/state';
-import { MarkdownView, Plugin } from 'obsidian';
+import { Plugin } from 'obsidian';
 import { Extension } from '@codemirror/state';
 
 import { DEFAULT_SETTINGS, NoMoreFlickerSettingTab, NoMoreFlickerSettings } from './settings';
-import { cleanerCallback } from 'cleaner';
 import { createViewPlugin } from 'decoration-and-atomic-range';
 import { selectionSatisfies } from 'utils';
 import { makeTransactionFilter } from 'transaction-filter';
@@ -50,14 +49,6 @@ export default class NoMoreFlicker extends Plugin {
 			state,
 			node => node.name.includes("HyperMD-table") || node.name.includes("hmd-table")
 		);
-	}
-
-	private cleanAllMarkdownViews() {
-		this.app.workspace.iterateAllLeaves((leaf) => {
-			if (leaf.view instanceof MarkdownView) {
-				cleanerCallback(leaf.view.editor);
-			}
-		});
 	}
 
 	remakeViewPlugin() {
