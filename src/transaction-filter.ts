@@ -13,6 +13,9 @@ export const makeTransactionFilter = (plugin: NoMoreFlicker): Extension => {
         const userEvent = tr.annotation(Transaction.userEvent)?.split('.')[0];
 
         if (userEvent === 'input') {
+			// Prevent issues with vim c_ commands
+			if (!tr.changes.inserted.length) return tr;
+			
             if (plugin.settings.disableOnIME) {
                 // Do nothing when the user is using IME input to avoid troubles that happen
                 // when using Latex Suite's tabout feature to escape from a math and then typing
