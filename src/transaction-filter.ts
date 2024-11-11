@@ -13,6 +13,15 @@ export const makeTransactionFilter = (plugin: NoMoreFlicker): Extension => {
         const userEvent = tr.annotation(Transaction.userEvent)?.split('.')[0];
 
         if (userEvent === 'input') {
+            // https://github.com/RyotaUshio/obsidian-inline-math/pull/9
+            // Do nothing if there is no actual text insertion
+            // to prevent issues with vim commands such as cw, ciw, dw, etc.
+            let hasInsertion = false;
+            tr.changes.iterChanges((fromA, toA, fromB, toB, inserted) => {
+                hasInsertion ||= inserted.length > 0;
+            });
+            if (!hasInsertion) return tr;
+
             if (plugin.settings.disableOnIME) {
                 // Do nothing when the user is using IME input to avoid troubles that happen
                 // when using Latex Suite's tabout feature to escape from a math and then typing
